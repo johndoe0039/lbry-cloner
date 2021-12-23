@@ -153,7 +153,8 @@ def fetch_videos(url:str)-> list:
 
 def upload_video(url, file_path, channel_id):
     data            = ydl.extract_info(url, download=False)
-    name            = "".join([i for i in data["title"] if i in chars])
+    title           = data["title"]
+    name            = "".join([i for i in title if i in chars])
     name            = name.replace(" ", "-")
     name            = "-".join([i for i in name.split("-") if i])
     bid             = 0.01
@@ -171,15 +172,15 @@ def upload_video(url, file_path, channel_id):
                     "name": name
             }
     }
-    var = requests.post(host, json=data).json()
+    ovar = requests.post(host, json=data).json()
     try:
-        var = var["result"]["outputs"][0]
+        var = ovar["result"]["outputs"][0]
         channel = var["signing_channel"]["name"]
         name = var["name"]
-        titles.append(data["title"])
+        titles.append(title)
         return f"https://lbry.tv/{channel}/{name}"
     except KeyError:
-        print(json.dumps(var, indent = 4))
+        print(json.dumps(ovar, indent = 4))
         exit()
 
 def download_video(url):
